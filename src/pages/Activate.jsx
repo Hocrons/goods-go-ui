@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const Activate = () => {
   const navigate = useNavigate();
-  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [code, setCode] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -17,7 +17,7 @@ const Activate = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/seller/activate", { email, code });
+      await api.post("/user/verify", { celular: phone, code });
       toast.success("Conta ativada! Você já pode entrar.");
       navigate("/login");
     } catch (error) {
@@ -36,14 +36,14 @@ const Activate = () => {
           </div>
           <div>
             <h1 className="text-2xl font-bold">Ativar conta</h1>
-            <p className="text-sm text-muted-foreground">Informe o código enviado ao seu e-mail</p>
+            <p className="text-sm text-muted-foreground">Informe o código enviado ao seu celular</p>
           </div>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="email">E-mail</Label>
-            <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+            <Label htmlFor="phone">Celular</Label>
+            <Input id="phone" type="tel" required value={phone} onChange={(e) => setPhone(e.target.value)} />
           </div>
           <div className="space-y-2">
             <Label htmlFor="code">Código de ativação</Label>

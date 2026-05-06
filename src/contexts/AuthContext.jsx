@@ -24,7 +24,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const { data } = await api.post("/auth/login", { email, password });
+      const { data } = await api.post("/api/auth/login", { email, password });
       const jwt = data.token || data.access_token;
       if (!jwt) throw new Error("Token não retornado pela API");
       localStorage.setItem("token", jwt);
