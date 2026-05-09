@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Plus, Pencil, Package } from "lucide-react";
 import api, { extractError } from "@/services/api";
+import { resolveProductImage } from "@/assets/products";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -72,13 +73,16 @@ const Products = () => {
                   <tr key={p.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                     <td className="px-4 py-3">
                       <div className="flex items-center gap-3">
-                        {p.image ? (
-                          <img src={p.image} alt={p.name} className="h-10 w-10 rounded object-cover" />
-                        ) : (
-                          <div className="flex h-10 w-10 items-center justify-center rounded bg-muted">
-                            <Package className="h-4 w-4 text-muted-foreground" />
-                          </div>
-                        )}
+                        {(() => {
+                          const src = resolveProductImage(p);
+                          return src ? (
+                            <img src={src} alt={p.name} className="h-10 w-10 rounded object-cover" />
+                          ) : (
+                            <div className="flex h-10 w-10 items-center justify-center rounded bg-muted">
+                              <Package className="h-4 w-4 text-muted-foreground" />
+                            </div>
+                          );
+                        })()}
                         <span className="font-medium">{p.name}</span>
                       </div>
                     </td>

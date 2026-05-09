@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import api, { extractError } from "@/services/api";
+import { productImageOptions, productImages } from "@/assets/products";
 import PageHeader from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -139,18 +140,26 @@ const ProductForm = () => {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="image">Imagem (URL)</Label>
-          <Input
-            id="image"
-            name="image"
-            type="url"
-            placeholder="https://..."
-            value={form.image}
-            onChange={handleChange}
-          />
-          {form.image && (
+          <Label htmlFor="image">Imagem do produto</Label>
+          <Select
+            value={form.image || "none"}
+            onValueChange={(v) => setForm({ ...form, image: v === "none" ? "" : v })}
+          >
+            <SelectTrigger id="image">
+              <SelectValue placeholder="Selecione uma imagem" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="none">Sem imagem</SelectItem>
+              {productImageOptions.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>
+                  {opt.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          {form.image && productImages[form.image] && (
             <img
-              src={form.image}
+              src={productImages[form.image]}
               alt="Preview"
               className="mt-2 h-24 w-24 rounded border border-border object-cover"
             />
