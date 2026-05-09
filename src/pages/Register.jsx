@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 const Register = () => {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "" });
+  const [form, setForm] = useState({ name: "", email: "", password: "", phone: "", cnpj: "" });
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
@@ -18,7 +18,13 @@ const Register = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/seller", form);
+      await api.post("/user", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+        celular: form.phone,
+        cnpj: form.cnpj
+      });
       toast.success("Cadastro realizado! Verifique seu e-mail para ativação.");
       navigate("/activate");
     } catch (error) {
@@ -53,6 +59,16 @@ const Register = () => {
           <div className="space-y-2">
             <Label htmlFor="phone">Telefone</Label>
             <Input id="phone" name="phone" value={form.phone} onChange={handleChange} />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="cnpj">CNPJ</Label>
+            <Input
+              id="cnpj"
+              name="cnpj"
+              required
+              value={form.cnpj}
+              onChange={handleChange}
+            />
           </div>
           <div className="space-y-2">
             <Label htmlFor="password">Senha</Label>

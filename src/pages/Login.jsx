@@ -6,7 +6,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
+import api from "../services/api";
 
+const handleLogin = async () => {
+  try {
+    const response = await api.post("/api/auth/login", {
+      email,
+      password,
+    });
+
+    localStorage.setItem("token", response.data.token);
+    localStorage.setItem("seller", JSON.stringify(response.data.seller));
+
+    // redirecionar
+    window.location.href = "/dashboard";
+  } catch (error) {
+    console.error(error);
+    alert("Erro no login");
+  }
+};
 const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();

@@ -39,7 +39,12 @@ const ProductForm = () => {
           name: p.name || "",
           price: p.price ?? "",
           quantity: p.quantity ?? p.stock ?? "",
-          status: p.status === false || p.status === "inactive" || p.status === "inativo" ? "inactive" : "active",
+          status:
+            p.status === "INACTIVE" ||
+            p.status === "inactive" ||
+            p.status === false
+              ? "inactive"
+              : "active",
           image: p.image || "",
         });
       } catch (error) {
@@ -59,7 +64,7 @@ const ProductForm = () => {
       name: form.name,
       price: parseFloat(form.price),
       quantity: parseInt(form.quantity, 10),
-      status: form.status,
+      status: form.status === "active" ? "ACTIVE" : "INACTIVE",
       image: form.image,
     };
     try {

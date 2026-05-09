@@ -15,6 +15,9 @@ import ProductForm from "@/pages/ProductForm";
 import Sales from "@/pages/Sales";
 import SaleForm from "@/pages/SaleForm";
 import NotFound from "@/pages/NotFound";
+import axios from "axios";
+
+
 
 const queryClient = new QueryClient();
 
