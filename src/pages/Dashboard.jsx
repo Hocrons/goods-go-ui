@@ -49,7 +49,7 @@ const Dashboard = () => {
       try {
         let dashboard = null;
         try {
-          const res = await api.get("/dashboard");
+          const res = await api.get("/api/dashboard");
           dashboard = res.data;
         } catch {
           /* fallback abaixo */
@@ -60,20 +60,31 @@ const Dashboard = () => {
           api.get("/sales").catch(() => ({ data: [] })),
         ]);
         const products = Array.isArray(productsRes.data) ? productsRes.data : productsRes.data.products || [];
-        const sales = Array.isArray(salesRes.data) ? salesRes.data : salesRes.data.sales || [];
+        const sales = Array.isArray(salesRes.data)
+          ? salesRes.data
+          : salesRes.data.sales || salesRes.data.vendas || [];
 
         const totalStock =
           dashboard?.totalStock ??
-          products.reduce((acc, p) => acc + Number(p.quantity ?? p.stock ?? 0), 0);
+          products.reduce(
+            (acc, p) => acc + Number(p.quantity ?? p.stock ?? p.quantidade_estoque ?? 0),
+            0
+          );
 
         const totalSold =
           dashboard?.totalSold ??
-          sales.reduce((acc, s) => acc + Number(s.price ?? s.unitPrice ?? 0) * Number(s.quantity ?? 0), 0);
+          sales.reduce(
+            (acc, s) => acc + Number(s.valor_total ?? (s.preco_unitario ?? s.price ?? s.unitPrice ?? 0) * Number(s.quantidade ?? s.quantity ?? 0)),
+            0
+          );
 
         const byProduct = {};
         sales.forEach((s) => {
-          const name = s.product?.name || s.productName || `#${s.productId ?? s.product_id}`;
-          const value = Number(s.price ?? s.unitPrice ?? 0) * Number(s.quantity ?? 0);
+          const name =
+            s.product?.name ||
+            s.productName ||
+            `#${s.produto_id ?? s.productId ?? s.product_id}`;
+          const value = Number(s.valor_total ?? (s.preco_unitario ?? s.price ?? s.unitPrice ?? 0)) * Number(s.quantidade ?? s.quantity ?? 0);
           byProduct[name] = (byProduct[name] || 0) + value;
         });
         const salesByProduct = Object.entries(byProduct)
@@ -82,7 +93,10 @@ const Dashboard = () => {
           .slice(0, 6);
 
         const stockByProduct = products
-          .map((p) => ({ name: p.name, stock: Number(p.quantity ?? p.stock ?? 0) }))
+          .map((p) => ({
+            name: p.name || p.nome || `#${p.id}`,
+            stock: Number(p.quantity ?? p.stock ?? p.quantidade_estoque ?? 0),
+          }))
           .sort((a, b) => b.stock - a.stock)
           .slice(0, 6);
 

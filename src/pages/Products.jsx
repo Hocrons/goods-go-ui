@@ -83,11 +83,11 @@ const Products = () => {
                             </div>
                           );
                         })()}
-                        <span className="font-medium">{p.name}</span>
+                        <span className="font-medium">{p.name || p.nome}</span>
                       </div>
                     </td>
-                    <td className="px-4 py-3">{formatPrice(p.price)}</td>
-                    <td className="px-4 py-3">{p.quantity ?? p.stock ?? 0}</td>
+                    <td className="px-4 py-3">{formatPrice(p.price || p.preco)}</td>
+                    <td className="px-4 py-3">{p.quantidade_estoque || p.quantity || p.stock || 0}</td>
                     <td className="px-4 py-3">
                       <Badge
                         variant="outline"
