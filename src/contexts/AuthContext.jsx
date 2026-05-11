@@ -25,13 +25,15 @@ export const AuthProvider = ({ children }) => {
   const login = async (email, password) => {
     try {
       const { data } = await api.post("/api/auth/login", { email, password });
-      const jwt = data.token || data.access_token;
+      const jwt = data.token || data.access_token || data.accessToken;
       if (!jwt) throw new Error("Token não retornado pela API");
       localStorage.setItem("token", jwt);
       setToken(jwt);
-      if (data.seller) {
-        localStorage.setItem("seller", JSON.stringify(data.seller));
-        setSeller(data.seller);
+
+      const user = data.seller || data.user;
+      if (user) {
+        localStorage.setItem("seller", JSON.stringify(user));
+        setSeller(user);
       }
       return { success: true };
     } catch (error) {

@@ -17,7 +17,11 @@ const Sales = () => {
     (async () => {
       try {
         const { data } = await api.get("/sales");
-        setSales(Array.isArray(data) ? data : data.sales || []);
+        setSales(
+          Array.isArray(data)
+            ? data
+            : data.sales || data.vendas || []
+        );
       } catch (error) {
         toast.error(extractError(error, "Erro ao carregar vendas"));
       } finally {
@@ -62,10 +66,13 @@ const Sales = () => {
               </thead>
               <tbody>
                 {sales.map((s) => {
-                  const unit = Number(s.price ?? s.unitPrice ?? 0);
-                  const qty = Number(s.quantity ?? 0);
-                  const total = unit * qty;
-                  const productName = s.product?.name || s.productName || `#${s.productId ?? s.product_id ?? "-"}`;
+                  const unit = Number(s.preco_unitario ?? s.price ?? s.unitPrice ?? 0);
+                  const qty = Number(s.quantidade ?? s.quantity ?? 0);
+                  const total = Number(s.valor_total ?? unit * qty);
+                  const productName =
+                    s.product?.name ||
+                    s.productName ||
+                    `#${s.produto_id ?? s.productId ?? s.product_id ?? "-"}`;
                   return (
                     <tr key={s.id} className="border-b border-border last:border-0 hover:bg-muted/30">
                       <td className="px-4 py-3 font-medium">{productName}</td>
@@ -73,7 +80,7 @@ const Sales = () => {
                       <td className="px-4 py-3">{formatPrice(unit)}</td>
                       <td className="px-4 py-3 font-medium">{formatPrice(total)}</td>
                       <td className="px-4 py-3 text-muted-foreground">
-                        {s.createdAt ? new Date(s.createdAt).toLocaleString("pt-BR") : "-"}
+                        {s.createdAt || s.created_at ? new Date(s.createdAt ?? s.created_at).toLocaleString("pt-BR") : "-"}
                       </td>
                     </tr>
                   );

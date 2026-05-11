@@ -37,7 +37,8 @@ const SaleForm = () => {
   }, []);
 
   const selected = products.find((p) => String(p.id) === String(productId));
-  const total = selected ? Number(selected.price) * Number(quantity || 0) : 0;
+  const selectedPrice = Number(selected?.price ?? selected?.preco ?? 0);
+  const total = selected ? selectedPrice * Number(quantity || 0) : 0;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,9 +46,8 @@ const SaleForm = () => {
     setLoading(true);
     try {
       await api.post("/sales", {
-        productId,
-        product_id: productId,
-        quantity: parseInt(quantity, 10),
+        produto_id: parseInt(productId, 10),
+        quantidade: parseInt(quantity, 10),
       });
       toast.success("Venda registrada com sucesso!");
       navigate("/sales");
@@ -75,7 +75,7 @@ const SaleForm = () => {
             <SelectContent>
               {products.map((p) => (
                 <SelectItem key={p.id} value={String(p.id)}>
-                  {p.name} — {formatPrice(p.price)} (estoque: {p.quantity ?? p.stock ?? 0})
+                  {(p.name || p.nome) ?? `Produto #${p.id}`} — {formatPrice(p.price ?? p.preco)} (estoque: {p.quantity ?? p.stock ?? p.quantidade_estoque ?? 0})
                 </SelectItem>
               ))}
             </SelectContent>
@@ -96,7 +96,7 @@ const SaleForm = () => {
 
         {selected && (
           <div className="rounded-md bg-accent p-4 text-sm">
-            <div className="flex justify-between"><span className="text-accent-foreground/70">Preço unitário</span><span className="font-medium">{formatPrice(selected.price)}</span></div>
+            <div className="flex justify-between"><span className="text-accent-foreground/70">Preço unitário</span><span className="font-medium">{formatPrice(selectedPrice)}</span></div>
             <div className="flex justify-between mt-1"><span className="text-accent-foreground/70">Total</span><span className="font-bold text-accent-foreground">{formatPrice(total)}</span></div>
           </div>
         )}
